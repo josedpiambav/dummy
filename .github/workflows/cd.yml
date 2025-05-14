@@ -13,11 +13,9 @@ jobs:
   merge-to-staging:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      id-token: write
       pull-requests: write
-      checks: read
-      statuses: write
-      actions: read
+      contents: write
 
     steps:
       - name: Checkout
