@@ -27,7 +27,7 @@ jobs:
 
       - name: Merge approved PR to staging
         id: merge
-        uses: docker://ghcr.io/josedpiambav/feature@v0.0.6
+        uses: docker://ghcr.io/josedpiambav/feature:latest
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
