@@ -1,0 +1,36 @@
+name: Continuos deployment
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
+    branches: [main]
+
+concurrency:
+  group: staging-merge-${{ github.event.pull_request.number }}-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  merge-to-staging:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+      statuses: write
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge approved PR to staging
+        id: merge
+        uses: docker://ghcr.io/josedpiambav/feature@v0.0.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          trunk-branch: "main"
+          labels: "next-feature"
