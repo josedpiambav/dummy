@@ -16,7 +16,6 @@ jobs:
   merge-to-staging:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       pull-requests: read
       contents: write
 
