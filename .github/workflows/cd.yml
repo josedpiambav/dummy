@@ -2,7 +2,7 @@ name: Continuos deployment
 
 on:
   pull_request:
-    types: [opened, reopened, labeled, synchronize]
+    types: [labeled, unlabeled, synchronize, ready_for_review]
     branches: [main]
   
   push:
