@@ -1,0 +1,40 @@
+name: Continuos deployment
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, ready_for_review]
+    branches: [main]
+  
+  push:
+    branches: [main]
+
+concurrency:
+  group: staging-merge-${{ github.event.pull_request.number }}-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  feature_branching:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge approved PR to staging
+        id: merge
+        uses: docker://ghcr.io/josedpiambav/feature:latest
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_output: ${{ env.GITHUB_OUTPUT }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          trunk_branch: "main"
+          labels: "next-feature"
+
+      - name: Usar output
+        run: echo "${{ steps.merge.outputs.target_branch }}"
